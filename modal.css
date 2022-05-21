@@ -188,6 +188,21 @@ main {
   margin: 15px auto;
 }
 
+.modal-body.finaly {
+  min-height: 80vh;
+}
+
+.modal-body.finaly form {
+  min-height: 80vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-body.finaly input {
+  align-items: flex-end;
+}
 label {
   font-family: var(--font-default);
   font-size: 17px;

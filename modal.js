@@ -62,6 +62,7 @@ function deleteAttributes(element) {
 // A la soumission du formulaire, on récupere les valeurs des champs du Formulaire pour par la suite, s'occuper du traitement de chaque champs selon leurs types
 formElem.addEventListener('submit', (e) => {
     e.preventDefault();
+    e.stopPropagation();
     const formData = new FormData(formElem);
 
     // Objet JSON pour faciliter les differents appels de fonction ou de propriétes nécessaires à etre utiliser
@@ -161,7 +162,38 @@ formElem.addEventListener('submit', (e) => {
 
     if (inputs.acceptedCGU.value == null) {
         giveErrorAttributes(inputs.acceptedCGU.formElement, 'Confirmez la lecture des CGU')
+        validate = false
     } else {
         deleteAttributes(inputs.acceptedCGU.formElement)
+        validate = true
     }
+
+    /* 
+        Une fois la validation effectuées, on va supprimer tous les elements HTML inputs
+        PAR la suite, on va ajouter un nouvel element HMTL pour remercie l'utilisateur d'avoir soumis son inscription
+        Il faudra aussi RECUPERER l'element Bouton Submit pour Fermer la modal
+    */
+
+    // <h1 class=''>Merci pour votre inscription</h1>\n <input class='button btn-submit' type='submit' value='Fermer'
+    console.log('Avant condition ')
+    if (validate) {
+        console.log('Dedans condition ')
+        formElem.innerHTML= ""
+        formElem.parentNode.classList.add('finaly')
+        let thankSubscribe = document.createElement('h1')
+        thankSubscribe.classList.add('text-control')
+        thankSubscribe.textContent = 'Merci pour votre inscription'
+
+        let newInputButton = document.createElement('input')
+        newInputButton.classList.add('button','btn-submit')
+        newInputButton.type = 'button'
+        newInputButton.value = 'Fermer'
+
+        formElem.appendChild(thankSubscribe)
+        formElem.appendChild(newInputButton)
+
+        newInputButton.addEventListener('click', closeModal)
+    }
+    console.log('apres condition ')
+
 })
