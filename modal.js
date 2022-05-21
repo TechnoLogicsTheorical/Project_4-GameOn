@@ -27,24 +27,7 @@ function launchModal() {
     modalbg.style.display = "block";
 }
 
-/*
-    LORSQUE l'on clique sur le bouton d'envoie du form
-        ON stop l'envoie des données et procédons au traitement de ces dernieres.
-        ON RECUPERE la valeur de chaque elements inputs
-
-          
-    let formElement = document.forms['reserve'];
-    
-    for(dataName of formData) {
-        formElement[dataName].value
-        console.log(this)
-    }
-*/
-
-//function validate() {
-    //Evenement inutile gréffée sur l'attribut de onsubmit="return validate();">
-//}
-
+// Collection des champs nommées dans les inputs
 const nameDataInputs = [
     'first',
     'last',
@@ -59,6 +42,8 @@ const nameDataInputs = [
 const formInputs = document.querySelectorAll('.formData')
 const formElem = document.querySelector('form');
 
+// Function permettant de récuperer l'element HTML ayant la classe formData et de créer les attributs HTML nécessaire pour afficher une erreur grace à la regle CSS : .formData[data-error]::after
+
 function giveErrorAttributes(element, textValue) {
     const enableEroor = document.createAttribute("data-error-visible")
     enableEroor.value = 'true';
@@ -69,14 +54,17 @@ function giveErrorAttributes(element, textValue) {
     element.attributes.setNamedItem(showText);
 }
 
+// Contraire de la fonction giveErrorAttributes pour effacer l'erreur en question
 function deleteAttributes(element) {
     element.removeAttribute("data-error-visible")
 }
 
-
+// A la soumission du formulaire, on récupere les valeurs des champs du Formulaire pour par la suite, s'occuper du traitement de chaque champs selon leurs types
 formElem.addEventListener('submit', (e) => {
     e.preventDefault();
     const formData = new FormData(formElem);
+
+    // Objet JSON pour faciliter les differents appels de fonction ou de propriétes nécessaires à etre utiliser
     let inputs = {
         firstname: {
             value : formData.get(nameDataInputs[0]),
@@ -104,13 +92,17 @@ formElem.addEventListener('submit', (e) => {
             value : formData.get(nameDataInputs[4]),
             formElement : formInputs[4]
         },
-        acceptedCGU: {
+        location: {
             value : formData.get(nameDataInputs[5]),
             formElement : formInputs[5]
         },
-        acceptedNews: {
+        acceptedCGU: {
             value : formData.get(nameDataInputs[6]),
             formElement : formInputs[6]
+        },
+        acceptedNews: {
+            value : formData.get(nameDataInputs[7]),
+            formElement : formInputs[7]
         },
     }
 
@@ -132,11 +124,44 @@ formElem.addEventListener('submit', (e) => {
         deleteAttributes(inputs.lastname.formElement)
     }
     
-    
-    let emailRegEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
-    if (emailRegEX.test(inputs.email.value) || inputs.email.value == "") {
+
+    const emailRegEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
+    // console.log(emailRegEX.test('aggg@hotmail'))
+    if (!emailRegEX.test(inputs.email.value) || inputs.email.value == "") {
         giveErrorAttributes(inputs.email.formElement, 'Veuillez saisir une adresse email correct')
     } else {
         deleteAttributes(inputs.email.formElement)
+    }
+
+    let dateYearBirth = new Date(inputs.birthdate.value).getFullYear()
+    let dateYearNow = new Date().getFullYear()
+
+    if (inputs.birthdate.value == "") {
+        giveErrorAttributes(inputs.birthdate.formElement, 'Ce champ ne peut être vide !')
+    } else if ((dateYearNow - dateYearBirth) < 8) {
+        giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'avez pas l\'age requis')
+    } else {
+        deleteAttributes(inputs.birthdate.formElement)
+    }
+
+    if (inputs.quantity.value == "") {
+        giveErrorAttributes(inputs.quantity.formElement, 'Veuillez spécifier un nombre')
+    } else if (parseInt(inputs.quantity.value) < 0 || parseInt(inputs.quantity.value) > 99) {
+        giveErrorAttributes(inputs.quantity.formElement, 'Entrez une valeur entre 0 et 99')
+    } else {
+        deleteAttributes(inputs.quantity.formElement)
+    }
+
+
+    if (inputs.location.value == null) {
+        giveErrorAttributes(inputs.location.formElement, 'Veuillez sélectionner une ville')
+    } else {
+        deleteAttributes(inputs.location.formElement)
+    }
+
+    if (inputs.acceptedCGU.value == null) {
+        giveErrorAttributes(inputs.acceptedCGU.formElement, 'Confirmez la lecture des CGU')
+    } else {
+        deleteAttributes(inputs.acceptedCGU.formElement)
     }
 })
