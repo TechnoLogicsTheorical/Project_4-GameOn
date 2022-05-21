@@ -139,9 +139,11 @@ formElem.addEventListener('submit', (e) => {
 
     if (inputs.birthdate.value == "") {
         giveErrorAttributes(inputs.birthdate.formElement, 'Ce champ ne peut être vide !')
+    } else if ((dateYearBirth - dateYearNow ) > 1) {
+        giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'êtes pas encore né ! :)')
     } else if ((dateYearNow - dateYearBirth) < 8) {
         giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'avez pas l\'age requis')
-    } else {
+    }  else {
         deleteAttributes(inputs.birthdate.formElement)
     }
 
