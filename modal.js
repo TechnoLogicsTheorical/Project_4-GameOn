@@ -39,24 +39,27 @@ const nameDataInputs = [
     'acceptedNews'
 ]
 
-const formInputs = document.querySelectorAll('.formData')
+const formInputs = document.querySelectorAll('.formData');
 const formElem = document.querySelector('form');
+let validate = true;
 
 // Function permettant de récuperer l'element HTML ayant la classe formData et de créer les attributs HTML nécessaire pour afficher une erreur grace à la regle CSS : .formData[data-error]::after
 
 function giveErrorAttributes(element, textValue) {
-    const enableEroor = document.createAttribute("data-error-visible")
+    const enableEroor = document.createAttribute("data-error-visible");
     enableEroor.value = 'true';
     element.attributes.setNamedItem(enableEroor);
     
-    const showText = document.createAttribute("data-error")
+    const showText = document.createAttribute("data-error");
     showText.value = textValue;
     element.attributes.setNamedItem(showText);
+
+    return false;
 }
 
 // Contraire de la fonction giveErrorAttributes pour effacer l'erreur en question
 function deleteAttributes(element) {
-    element.removeAttribute("data-error-visible")
+    element.removeAttribute("data-error-visible");
 }
 
 // A la soumission du formulaire, on récupere les valeurs des champs du Formulaire pour par la suite, s'occuper du traitement de chaque champs selon leurs types
@@ -65,6 +68,7 @@ formElem.addEventListener('submit', (e) => {
     e.stopPropagation();
     const formData = new FormData(formElem);
 
+    validate = true;
     // Objet JSON pour faciliter les differents appels de fonction ou de propriétes nécessaires à etre utiliser
     let inputs = {
         firstname: {
@@ -108,66 +112,73 @@ formElem.addEventListener('submit', (e) => {
     }
 
     //------------------------------------- Check Conditions ----------------------------------------------------------------
-    if (inputs.firstname.value == "" ) {
-        giveErrorAttributes(inputs.firstname.formElement, 'Ce champ ne peut être vide !')
+    
+    const haveNumber = /[0-9]/
+
+    if (inputs.firstname.value == "") {
+        validate = giveErrorAttributes(inputs.firstname.formElement, 'Ce champ ne peut être vide !');
     } else if (inputs.firstname.condition() < 2){
-        giveErrorAttributes(inputs.firstname.formElement, 'Ce champ nécessite au moins 2 caractères')
+        validate = giveErrorAttributes(inputs.firstname.formElement, 'Ce champ nécessite au moins 2 caractères');
+    } else if (haveNumber.test(inputs.firstname.value)) { 
+        validate = giveErrorAttributes(inputs.firstname.formElement, 'Ce champ ne peut contenir des chiffres');
     } else {
-        deleteAttributes(inputs.firstname.formElement)
+        deleteAttributes(inputs.firstname.formElement);
     }
 
 
     if (inputs.lastname.value == "" ) {
-        giveErrorAttributes(inputs.lastname.formElement, 'Ce champ ne peut être vide !')
+        validate = giveErrorAttributes(inputs.lastname.formElement, 'Ce champ ne peut être vide !');
     } else if (inputs.lastname.condition() < 2){
-        giveErrorAttributes(inputs.firstname.formElement, 'Ce champ nécessite au moins 2 caractères')
+        validate = giveErrorAttributes(inputs.lastname.formElement, 'Ce champ nécessite au moins 2 caractères');
+    } else if (haveNumber.test(inputs.lastname.value)) { 
+        validate = giveErrorAttributes(inputs.lastname.formElement, 'Ce champ ne peut contenir des chiffres');
     } else {
-        deleteAttributes(inputs.lastname.formElement)
+        deleteAttributes(inputs.lastname.formElement);
     }
     
 
     const emailRegEX = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/
     // console.log(emailRegEX.test('aggg@hotmail'))
     if (!emailRegEX.test(inputs.email.value) || inputs.email.value == "") {
-        giveErrorAttributes(inputs.email.formElement, 'Veuillez saisir une adresse email correct')
+        validate = giveErrorAttributes(inputs.email.formElement, 'Veuillez saisir une adresse email correct');
     } else {
-        deleteAttributes(inputs.email.formElement)
+        deleteAttributes(inputs.email.formElement);
     }
 
-    let dateYearBirth = new Date(inputs.birthdate.value).getFullYear()
-    let dateYearNow = new Date().getFullYear()
+    let dateYearBirth = new Date(inputs.birthdate.value).getFullYear();
+    let dateYearNow = new Date().getFullYear();
 
     if (inputs.birthdate.value == "") {
-        giveErrorAttributes(inputs.birthdate.formElement, 'Ce champ ne peut être vide !')
+        validate = giveErrorAttributes(inputs.birthdate.formElement, 'Ce champ ne peut être vide !');
     } else if ((dateYearBirth - dateYearNow ) > 1) {
-        giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'êtes pas encore né ! :)')
+        validate = giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'êtes pas encore né ! :)');
     } else if ((dateYearNow - dateYearBirth) < 8) {
-        giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'avez pas l\'age requis')
-    }  else {
-        deleteAttributes(inputs.birthdate.formElement)
+        validate = giveErrorAttributes(inputs.birthdate.formElement, 'Vous n\'avez pas l\'age requis');
+    } else if ((dateYearNow - dateYearBirth) > 100) {
+        validate = giveErrorAttributes(inputs.birthdate.formElement, 'Votre age ne correspond pas aux critères.');
+    } else {
+        deleteAttributes(inputs.birthdate.formElement);
     }
 
     if (inputs.quantity.value == "") {
-        giveErrorAttributes(inputs.quantity.formElement, 'Veuillez spécifier un nombre')
+        validate = giveErrorAttributes(inputs.quantity.formElement, 'Veuillez spécifier un nombre')
     } else if (parseInt(inputs.quantity.value) < 0 || parseInt(inputs.quantity.value) > 99) {
-        giveErrorAttributes(inputs.quantity.formElement, 'Entrez une valeur entre 0 et 99')
+        validate = giveErrorAttributes(inputs.quantity.formElement, 'Entrez une valeur entre 0 et 99')
     } else {
-        deleteAttributes(inputs.quantity.formElement)
+        deleteAttributes(inputs.quantity.formElement);
     }
 
 
     if (inputs.location.value == null) {
-        giveErrorAttributes(inputs.location.formElement, 'Veuillez sélectionner une ville')
+        validate = giveErrorAttributes(inputs.location.formElement, 'Veuillez sélectionner une ville')
     } else {
-        deleteAttributes(inputs.location.formElement)
+        deleteAttributes(inputs.location.formElement);
     }
 
     if (inputs.acceptedCGU.value == null) {
-        giveErrorAttributes(inputs.acceptedCGU.formElement, 'Confirmez la lecture des CGU')
-        validate = false
+        validate = giveErrorAttributes(inputs.acceptedCGU.formElement, 'Confirmez la lecture des CGU')
     } else {
-        deleteAttributes(inputs.acceptedCGU.formElement)
-        validate = true
+        deleteAttributes(inputs.acceptedCGU.formElement);
     }
 
     /* 
@@ -177,9 +188,7 @@ formElem.addEventListener('submit', (e) => {
     */
 
     // <h1 class=''>Merci pour votre inscription</h1>\n <input class='button btn-submit' type='submit' value='Fermer'
-    console.log('Avant condition ')
     if (validate) {
-        console.log('Dedans condition ')
         formElem.innerHTML= ""
         formElem.parentNode.classList.add('finaly')
         let thankSubscribe = document.createElement('h1')
@@ -196,6 +205,4 @@ formElem.addEventListener('submit', (e) => {
 
         newInputButton.addEventListener('click', closeModal)
     }
-    console.log('apres condition ')
-
 })

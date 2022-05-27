@@ -185,24 +185,33 @@ main {
 
 .modal-body {
   padding: 15px 8%;
-  margin: 15px auto;
+  margin: 30px auto 15px;
+  position: relative;
 }
 
 .modal-body.finaly {
   min-height: 80vh;
+  text-align: center;
+}
+
+.modal-body.finaly h1 {
+  font-size: 36px;
+  height: max-content;
 }
 
 .modal-body.finaly form {
-  min-height: 80vh;
   display: flex;
+  min-height: 80vh;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
 
 .modal-body.finaly input {
-  align-items: flex-end;
+  position: absolute;
+  bottom: 21px;
 }
+
 label {
   font-family: var(--font-default);
   font-size: 17px;
