@@ -41,10 +41,19 @@ const nameDataInputs = [
 
 const formInputs = document.querySelectorAll('.formData');
 const formElem = document.querySelector('form');
+/**
+ * Variable de validation booléen qui permet à la fin de décider d'afficher ou non le message d'inscription
+ */
 let validate = true;
 
-// Function permettant de récuperer l'element HTML ayant la classe formData et de créer les attributs HTML nécessaire pour afficher une erreur grace à la regle CSS : .formData[data-error]::after
-
+/**
+ * @function 
+ * Function permettant de récuperer l'element HTML ayant la classe formData et de créer les attributs HTML nécessaire pour afficher une erreur grace à la regle CSS : .formData[data-error]::after
+ * @param {HTMLElement} element Prend en argument la variable de l'élement HTML
+ * @param {string} textValue Prend en chaine de caractère indiquant le message à afficher
+ * 
+ * @returns {boolean} False Retourne un valeur booléenne false pour le stocker dans la variable de validation du formulaire
+ */
 function giveErrorAttributes(element, textValue) {
     const enableEroor = document.createAttribute("data-error-visible");
     enableEroor.value = 'true';
@@ -56,20 +65,28 @@ function giveErrorAttributes(element, textValue) {
 
     return false;
 }
-
-// Contraire de la fonction giveErrorAttributes pour effacer l'erreur en question
+/**
+ * @function 
+ *  Contraire de la fonction giveErrorAttributes pour effacer l'erreur en question
+ *  @param {HTMLElement} element Prend en argument la variable de l'élement HTML
+ */
 function deleteAttributes(element) {
     element.removeAttribute("data-error-visible");
+    element.removeAttribute("data-error");
 }
 
 // A la soumission du formulaire, on récupere les valeurs des champs du Formulaire pour par la suite, s'occuper du traitement de chaque champs selon leurs types
 formElem.addEventListener('submit', (e) => {
     e.preventDefault();
     e.stopPropagation();
+
     const formData = new FormData(formElem);
 
     validate = true;
-    // Objet JSON pour faciliter les differents appels de fonction ou de propriétes nécessaires à etre utiliser
+
+    /**
+     *  Objet JSON pour faciliter les differents appels de fonction ou de propriétes nécessaires à etre utiliser
+     */
     let inputs = {
         firstname: {
             value : formData.get(nameDataInputs[0]),
