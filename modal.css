@@ -69,10 +69,22 @@ img {
 }
 
 @media screen and (max-width: 768px) {
-  .topnav a {display: none;}
+  .topnav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    
+  }
+
+  .topnav a {display: none; }
   .topnav a.icon {
+    
     float: right;
     display: block;
+  }
+
+  .header-logo, .header-logo img {
+    height: 23px;
   }
 }
 
@@ -88,6 +100,10 @@ img {
     display: block;
     text-align: left;
   }
+  .topnav.responsive .header-logo {
+    align-self: baseline;
+    line-height: 47px;
+  }
 }
 
 
@@ -97,7 +113,7 @@ img {
   .topnav a.icon {
     float: right;
     display: block;
-    margin-top: -15px;
+    /* margin-top: -15px; */
   }
 } 
 
@@ -234,12 +250,12 @@ input {
 }
 .formData[data-error]::after {
   content: attr(data-error);
-  font-size: 0.8em;
+  font-size: 12px;
   color: #e54858;
   display: block;
   margin-top: 7px;
   margin-bottom: 7px;
-  text-align: right;
+  text-align: left;
   line-height: 0.3;
   opacity: 0;
   transition: 0.3s;
@@ -510,7 +526,8 @@ footer {
   .hero-content {
     background: #fff;
     color: #000;
-    padding: 20px;
+    padding: 20px 0;
+    min-width: 100%;
   }
   .hero-content::after {
     content: unset;
@@ -519,8 +536,9 @@ footer {
     display: none;
   }
   .hero-headline {
-    font-size: 4.5rem;
+    font-size: 40px;
     white-space: normal;
+    font-weight: 500;
   }
   .hero-text {
     width: unset;
